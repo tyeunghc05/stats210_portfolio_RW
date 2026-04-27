@@ -9,7 +9,49 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 ```{r}
+#| label: Load in library and csv
+
+library(tidyverse)
+
+whales <- read.csv("~/Desktop/CSUMB/25-26/Spring 26/Stats 210 /Labs/Right Whales/stats210_portfolio_RW/23305_RWSAS.csv")
 
 ```
+
+
+```{r}
+#| label: Cleaning data 
+
+whales_clean <- whales |> 
+  select(-DUPLICATE, -MOM_CALF) |> 
+  mutate(sighting = dmy(SIGHTINGDATE),
+         certainty = as.factor(CERTAINTY),
+         category = as.factor(CATEGORY)) |> 
+  select(-SIGHTINGDATE, -CERTAINTY, -CATEGORY) |> 
+  drop_na() |> 
+   arrange(sighting) |> 
+  filter(certainty == "Definite") |> 
+  mutate(
+    area = case_when(
+      LAT > 40 ~ "North",
+      LAT > 35 ~ "Mid",
+      TRUE ~ "South"
+    )
+  ) 
+```
+
+```{r}
+#| label: Pivoting and summarising data 
+
+pivot_whale <- whales_clean |> 
+  group_by(category) |> 
+  summarise(mean_group = mean(GROUPSIZE, na.rm = TRUE),
+            count = n())
+```
+
+
+
+
+
 
