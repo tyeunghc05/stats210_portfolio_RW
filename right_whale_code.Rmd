@@ -50,6 +50,48 @@ pivot_whale <- whales_clean |>
             count = n())
 ```
 
+```{r}
+#| label: Count sightings by area
+
+area_counts <- whales_clean |> 
+  group_by(area) |> 
+  summarise(count = n())
+
+ggplot(area_counts, aes(area, count))+
+  geom_col()+
+  labs(
+    title = "Right Whale sighting by area",
+    x = "Area",
+    y = "Number of sightings"
+  )
+# answer where the whales are, rearrange the north mid and south 
+
+
+```
+```{r}
+#| label: Graphing whether group size vary across sighting types
+
+ggplot(whales_clean, aes(category, GROUPSIZE))+
+  geom_boxplot()+
+  labs(
+    title = "Group sizes across sighting types",
+    x = "Sighting type",
+    y = "Group size"
+  )
+```
+
+```{r}
+#| label: Statistical Testing
+
+aov_whale <-aov(GROUPSIZE ~ category, data = whales_clean)
+summary(aov_whale)
+
+# F(8, 12451) = 32, p < 2e-16, there is a statically significant difference in group size across sighting types (there is at least ONE DIFFERENCE)
+
+TukeyHSD(aov_whale)
+```
+
+
 
 
 
