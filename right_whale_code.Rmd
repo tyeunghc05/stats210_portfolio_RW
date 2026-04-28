@@ -40,6 +40,7 @@ whales_clean <- whales |>
       TRUE ~ "South"
     )
   ) 
+  
 ```
 
 ```{r}
@@ -83,8 +84,9 @@ ggplot(whales_clean, aes(x = reorder(category, -GROUPSIZE), y = GROUPSIZE))+
   labs(
     title = "Group sizes across sighting types",
     x = "Sighting type",
-    y = "Group size"
-  )
+    y = "Whale group size"
+  ) +
+  theme_bw()
 ```
 
 ```{r}
@@ -104,16 +106,58 @@ TukeyHSD(aov_whale)
 mom_baby <- whales |> 
   select(-DUPLICATE, -CATEGORY) |> 
   mutate(
+    SIGHTINGDATE = dmy(SIGHTINGDATE),
+    month = month(SIGHTINGDATE, label = TRUE),
     season = case_when(
-      SIGHTINGDATE %in% c("Mar","Apr","May") ~ "spring",
-     SIGHTINGDATE %in% c("Jun", "Jul", "Aug") ~ "summer",
-     SIGHTINGDATE %in% c("Sep", "Oct", "Nov") ~ "fall",
-    SIGHTINGDATE %in%  c("Dec", "Jan", "Feb") ~ "winter"
-      
+      month %in% c("Mar","Apr","May") ~ "spring",
+      month %in% c("Jun", "Jul", "Aug") ~ "summer",
+      month %in% c("Sep", "Oct", "Nov") ~ "fall",
+      month %in%  c("Dec", "Jan", "Feb") ~ "winter"
+  )) |> 
+  mutate(
+    area = case_when(
+      LAT > 40 ~ "North",
+      LAT > 35 ~ "Mid",
+      TRUE ~ "South"
     )
-  ) 
+  )
+
+
+baby_area_count <- mom_baby |> 
+  count(area, season)
+
+  
 ```
 
+```{r}
+#| label: Mom-calf-sighting-graph
+
+
+desired_order <- c("North", "Mid", "South")
+baby_area_count$area <- factor(baby_area_count$area, levels = desired_order)
+
+
+ggplot(baby_area_count, aes(season, n, fill = area))+
+  geom_col(position = "dodge")+
+  scale_y_log10()+
+  labs(
+    title = "Whale mom and calf sighting in different areas",
+    x = "Season",
+    y = "Number of Sightings"
+  )+
+  theme_bw()
+  
+ggplot(baby_area_count, aes(season, n, fill = season))+
+  geom_boxplot()+
+  scale_y_log10()+
+  labs(
+    title = "Number of sightings of whale mom and calf",
+    x = "Season",
+    y = "Number of sightings"
+  )+
+  theme_bw()
+
+```
 
 
 
