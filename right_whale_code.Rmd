@@ -159,6 +159,17 @@ ggplot(baby_area_count, aes(season, n, fill = season))+
 
 ```
 
+```{r}
+#| label: relationship-between-calf-and-groupsize
+
+group_baby <- mom_baby |> 
+  count(MOM_CALF, GROUPSIZE)
+
+ggplot(mom_baby, aes( ))+
+  geom_point()+
+  geom_smooth()
+```
+
 
 
 
