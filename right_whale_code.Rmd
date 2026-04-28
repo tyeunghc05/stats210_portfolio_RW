@@ -11,9 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-#| label: Load in library and csv
+#| label: Load-in-library-and-csv
 
 library(tidyverse)
+library(lubridate)
 
 whales <- read.csv("~/Desktop/CSUMB/25-26/Spring 26/Stats 210 /Labs/Right Whales/stats210_portfolio_RW/23305_RWSAS.csv")
 
@@ -21,7 +22,7 @@ whales <- read.csv("~/Desktop/CSUMB/25-26/Spring 26/Stats 210 /Labs/Right Whales
 
 
 ```{r}
-#| label: Cleaning data 
+#| label: Cleaning-data 
 
 whales_clean <- whales |> 
   select(-DUPLICATE, -MOM_CALF) |> 
@@ -42,7 +43,7 @@ whales_clean <- whales |>
 ```
 
 ```{r}
-#| label: Pivoting and summarising data 
+#| label: Pivoting-and-summarising-data 
 
 pivot_whale <- whales_clean |> 
   group_by(category) |> 
@@ -51,7 +52,10 @@ pivot_whale <- whales_clean |>
 ```
 
 ```{r}
-#| label: Count sightings by area
+#| label: Count-sightings-by-area
+
+desired_order <- c("North", "Mid", "South")
+whales_clean$area <- factor(whales_clean$area, levels = desired_order)
 
 area_counts <- whales_clean |> 
   group_by(area) |> 
@@ -64,15 +68,18 @@ ggplot(area_counts, aes(area, count))+
     x = "Area",
     y = "Number of sightings"
   )
-# answer where the whales are, rearrange the north mid and south 
+
+# This graph shows where right whale sightings are oftenly seen 
 
 
 ```
 ```{r}
-#| label: Graphing whether group size vary across sighting types
+#| label: Graphing-whethe-group-size-vary-across-sighting-types
 
-ggplot(whales_clean, aes(category, GROUPSIZE))+
+ggplot(whales_clean, aes(x = reorder(category, -GROUPSIZE), y = GROUPSIZE))+
   geom_boxplot()+
+  coord_flip()+
+  scale_y_log10()+
   labs(
     title = "Group sizes across sighting types",
     x = "Sighting type",
@@ -81,7 +88,7 @@ ggplot(whales_clean, aes(category, GROUPSIZE))+
 ```
 
 ```{r}
-#| label: Statistical Testing
+#| label: Statistical-Testing
 
 aov_whale <-aov(GROUPSIZE ~ category, data = whales_clean)
 summary(aov_whale)
@@ -91,6 +98,21 @@ summary(aov_whale)
 TukeyHSD(aov_whale)
 ```
 
+```{r}
+#| label: Mom-and-calf-sighting
+
+mom_baby <- whales |> 
+  select(-DUPLICATE, -CATEGORY) |> 
+  mutate(
+    season = case_when(
+      SIGHTINGDATE %in% c("Mar","Apr","May") ~ "spring",
+     SIGHTINGDATE %in% c("Jun", "Jul", "Aug") ~ "summer",
+     SIGHTINGDATE %in% c("Sep", "Oct", "Nov") ~ "fall",
+    SIGHTINGDATE %in%  c("Dec", "Jan", "Feb") ~ "winter"
+      
+    )
+  ) 
+```
 
 
 
