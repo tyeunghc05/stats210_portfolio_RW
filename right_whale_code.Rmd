@@ -37,9 +37,7 @@ whales_clean <- whales |>
     area = case_when(
       LAT > 40 ~ "North",
       LAT > 35 ~ "Mid",
-      TRUE ~ "South"
-    )
-  ) 
+      TRUE ~ "South")) 
   
 ```
 
@@ -50,6 +48,13 @@ pivot_whale <- whales_clean |>
   group_by(category) |> 
   summarise(mean_group = mean(GROUPSIZE, na.rm = TRUE),
             count = n())
+
+ggplot(pivot_whale, aes(reorder(category, count), count))+
+  geom_col()+
+  coord_flip()+
+  scale_y_log10()
+
+# this graph shows which category have recorded to have sighted the most number of whales
 ```
 
 ```{r}
@@ -62,20 +67,21 @@ area_counts <- whales_clean |>
   group_by(area) |> 
   summarise(count = n())
 
-ggplot(area_counts, aes(area, count))+
+ggplot(area_counts, aes(area, count, fill = area))+
   geom_col()+
+  scale_y_log10()+
   labs(
     title = "Right Whale sighting by area",
     x = "Area",
     y = "Number of sightings"
-  )
+  )+
+  theme_bw()
 
-# This graph shows where right whale sightings are oftenly seen 
-
+# This graph shows where right whale sightings are oftenly seen (north, between, or south) 
 
 ```
 ```{r}
-#| label: Graphing-whethe-group-size-vary-across-sighting-types
+#| label: Graphing-whether-group-size-vary-across-sighting-types
 
 ggplot(whales_clean, aes(x = reorder(category, -GROUPSIZE), y = GROUPSIZE))+
   geom_boxplot()+
@@ -87,6 +93,8 @@ ggplot(whales_clean, aes(x = reorder(category, -GROUPSIZE), y = GROUPSIZE))+
     y = "Whale group size"
   ) +
   theme_bw()
+
+# this graph shows which category sees different group sizes
 ```
 
 ```{r}
@@ -102,6 +110,7 @@ TukeyHSD(aov_whale)
 
 ```{r}
 #| label: Mom-and-calf-sighting
+#| label: cleaning-data
 
 mom_baby <- whales |> 
   select(-DUPLICATE, -CATEGORY) |> 
@@ -146,6 +155,8 @@ ggplot(baby_area_count, aes(season, n, fill = area))+
     y = "Number of Sightings"
   )+
   theme_bw()
+
+# this graphs shows sighting of whale mom and calf in different seasons in different areas
   
 ggplot(baby_area_count, aes(season, n, fill = season))+
   geom_boxplot()+
@@ -157,17 +168,24 @@ ggplot(baby_area_count, aes(season, n, fill = season))+
   )+
   theme_bw()
 
+# this graph shows the number of sightings of whale mom and calf across all seasons
+
 ```
 
 ```{r}
 #| label: relationship-between-calf-and-groupsize
 
 group_baby <- mom_baby |> 
-  count(MOM_CALF, GROUPSIZE)
+  count(MOM_CALF, GROUPSIZE) |> 
+  rename(count = n) |> 
+  filter(!count == 1967)
 
-ggplot(mom_baby, aes( ))+
+ggplot(group_baby, aes(GROUPSIZE, count))+
   geom_point()+
-  geom_smooth()
+  geom_smooth(method = "glm", method.args = list(family = "poisson"))+
+  scale_x_log10()
+
+# this graph shows whether there is a relationship between sighting of whale mom and calf with group size
 ```
 
 
