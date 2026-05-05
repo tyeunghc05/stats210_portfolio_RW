@@ -18,6 +18,9 @@ library(lubridate)
 
 whales <- read.csv("~/Desktop/CSUMB/25-26/Spring 26/Stats 210 /Labs/Right Whales/stats210_portfolio_RW/23305_RWSAS.csv")
 
+# (run this when everything is done)
+knitr::convert_chunk_header("right_whale_code.Rmd", output = "right_whale_code_UPDATED.qmd")
+
 ```
 
 
@@ -37,7 +40,8 @@ whales_clean <- whales |>
     area = case_when(
       LAT > 40 ~ "North",
       LAT > 35 ~ "Mid",
-      TRUE ~ "South")) 
+      TRUE ~ "South")) |> 
+  filter(!category == "Unknown")
   
 ```
 
@@ -52,10 +56,17 @@ pivot_whale <- whales_clean |>
 ggplot(pivot_whale, aes(reorder(category, count), count))+
   geom_col()+
   coord_flip()+
-  scale_y_log10()
+  scale_y_log10()+
+  labs(
+    title = "Number of whale sightings at different sighting types",
+    y = "Whale sighting numbers",
+    x = "Sighting types"
+  )
+  theme_bw()
 
 # this graph shows which category have recorded to have sighted the most number of whales
 ```
+Figure 1. This graph shows the amount of right whale sightings at different sighting types.  
 
 ```{r}
 #| label: Count-sightings-by-area
@@ -80,6 +91,8 @@ ggplot(area_counts, aes(area, count, fill = area))+
 # This graph shows where right whale sightings are oftenly seen (north, between, or south) 
 
 ```
+Figure 2. This graph shows the number of right whale sightings in different areas, categorized by North (pink), Mid (green), and South (blue). 
+
 ```{r}
 #| label: Graphing-whether-group-size-vary-across-sighting-types
 
@@ -96,6 +109,7 @@ ggplot(whales_clean, aes(x = reorder(category, -GROUPSIZE), y = GROUPSIZE))+
 
 # this graph shows which category sees different group sizes
 ```
+Figure 3. This graph shows the whale group size seen at different sighting types.
 
 ```{r}
 #| label: Statistical-Testing
@@ -183,7 +197,8 @@ group_baby <- mom_baby |>
 ggplot(group_baby, aes(GROUPSIZE, count))+
   geom_point()+
   geom_smooth(method = "glm", method.args = list(family = "poisson"))+
-  scale_x_log10()
+  scale_x_log10()+
+  theme_bw()
 
 # this graph shows whether there is a relationship between sighting of whale mom and calf with group size
 ```
