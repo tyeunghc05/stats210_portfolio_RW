@@ -120,7 +120,6 @@ TukeyHSD(aov_whale)
 
 ```{r}
 #| label: Mom-and-calf-sighting
-#| label: cleaning-data
 
 mom_baby <- whales |> 
   select(-DUPLICATE, -CATEGORY) |> 
@@ -173,7 +172,12 @@ Figure 4. This bar graph shows right whale mom and calf sightings throughout dif
 ggplot(baby_area_count, aes(season, n, fill = season))+
   geom_boxplot() + 
   scale_y_log10()+
-  
+  labs(
+    title = "Number of right whale mom and calfs sighted in different seasons",
+    x = "Season",
+    y = "Whale sightings (mom and calf)"
+  ) +
+  theme_bw()
          
 ```
 Figure 5. This boxplot shows the number of sightings of whale mom and calf across all seasons.  
