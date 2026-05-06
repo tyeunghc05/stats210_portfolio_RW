@@ -20,9 +20,6 @@ library(lubridate)
 
 whales <- read.csv("~/Desktop/CSUMB/25-26/Spring 26/Stats 210 /Labs/Right Whales/stats210_portfolio_RW/23305_RWSAS.csv")
 
-# (run this when everything is done)
-knitr::convert_chunk_header("right_whale_code.Rmd", output = "right_whale_code_UPDATED.qmd")
-
 ```
 
 
@@ -168,22 +165,18 @@ ggplot(baby_area_count, aes(season, n, fill = area))+
   theme_bw()
 
 ```
-Figure 4. This boxplot shows the number of sightings of whale mom and calf across all seasons
+Figure 4. This bar graph shows right whale mom and calf sightings throughout different seasons at different areas, categorized as North (pink), Mid (green), and South (blue)
 
 ```{r}
 #| label: Mom-calf-sighting-graph
   
-ggplot(baby_area_count, aes(season, n, fill = area))+
-  geom_col(position = "dodge")+
+ggplot(baby_area_count, aes(season, n, fill = season))+
+  geom_boxplot() + 
   scale_y_log10()+
-  labs(
-    title = "Whale mom and calf sighting in different areas",
-    x = "Season",
-    y = "Number of Sightings"
-  )+
-  theme_bw()
+  
+         
 ```
-Figure 5. This bar graph shows right whale mom and calf sightings throughout different seasons at different areas, categorized as North (pink), Mid (green), and South (blue). 
+Figure 5. This boxplot shows the number of sightings of whale mom and calf across all seasons.  
 
 
 ```{r}
