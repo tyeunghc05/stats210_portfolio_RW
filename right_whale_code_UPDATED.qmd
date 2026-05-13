@@ -88,7 +88,7 @@ ggplot(area_counts, aes(area, count, fill = area))+
 
 
 ```
-Figure 2. Bar graph shows the number of right whale sightings in different areas, categorized by North (pink), Mid (green), and South (blue). 
+Figure 2. Bar graph showing the number of right whale sightings in different areas, categorized by North (pink), Mid (green), and South (blue), based on the area. 
 
 ```{r}
 #| label: Graphing-whether-group-size-vary-across-sighting-types
@@ -105,7 +105,7 @@ ggplot(whales_clean, aes(x = reorder(category, -GROUPSIZE), y = GROUPSIZE))+
   theme_bw()
 
 ```
-Figure 3. Boxplot shows the whale group size seen at different sighting types.
+Figure 3. Boxplot showing the whale group size seen at different sighting types.
 
 ```{r}
 #| label: Statistical-Testing
@@ -164,7 +164,7 @@ ggplot(baby_area_count, aes(season, n, fill = area))+
   theme_bw()
 
 ```
-Figure 4. Bargraph shows right whale mom and calf sightings throughout different seasons at different areas, categorized as North (pink), Mid (green), and South (blue)
+Figure 4. Bargraph showing right whale mom and calf sightings throughout different seasons at different areas, categorized as North (pink), Mid (green), and South (blue).
 
 ```{r}
 #| label: Mom-calf-sighting-graph
@@ -180,7 +180,7 @@ ggplot(baby_area_count, aes(season, n, fill = season))+
   theme_bw()
          
 ```
-Figure 5. Boxplot shows the number of sightings of whale mom and calf across all seasons.  
+Figure 5. Boxplot showing the number of sightings of whale mom and calf across all seasons.  
 
 
 ```{r}
@@ -199,7 +199,7 @@ ggplot(group_baby, aes(GROUPSIZE, count))+
 
 
 ```
-Figure 6. Scatterplot showing the relationship between whale mother-calf sightings and group size
+Figure 6. Scatterplot showing the relationship between whale mother-calf sightings and group size.
 
 
 
